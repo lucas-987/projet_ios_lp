@@ -11,29 +11,25 @@ import UIKit
 class TodoTableViewController: UITableViewController {
     //@IBOutlet var todoTableView: UITableView!
     @IBOutlet weak var addTodoTextField: UITextField!
-    
-    var tasks = [
-        "task 1",
-        "task 2",
-        "task 3",
-        "task 4",
-        "task 5",
-        "task 6",
-        "task 7",
-        "task 8",
-        "task 9"
-    ]
+    var tasks = [ToDoTask]()
 
-    
-    
     @IBAction func addTodoTextFieldEntered(_ sender: UITextField) {
-        tasks.append(sender.text!)
-        sender.resignFirstResponder()
-        
-        tableView.reloadData()
+        if(sender.text!.isEmpty || sender.text!.trimmingCharacters(in: .whitespaces).isEmpty){
+            let alert = UIAlertController(title: "Erreur", message: "Veuillez entrer un nom pour la tâche", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+            NSLog("The \"OK\" alert occured.")
+            }))
+            self.present(alert, animated: true, completion: nil)
+        }
+        else{
+            tasks.append(ToDoTask(title: sender.text!, state: false))
+            sender.resignFirstResponder()
+            tableView.reloadData()
+        }
     }
     
     override func viewDidLoad() {
+        tasks = ToDoTask.loadSampleToDos()
         super.viewDidLoad()
 
         // Uncomment the following line to preserve selection between presentations
@@ -58,12 +54,12 @@ class TodoTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TodoTaskCell", for: indexPath) as! TodoTableViewCell
-
         // Configure the cell...
         let task = tasks[indexPath.row]
-        
-        cell.todoTitleLabel.text = task
-
+        cell.todoTitleLabel.text = task.title
+        cell.toDoTask = task
+        if(task.state == true){cell.todoButtonDone.setTitle("Done", for: [])}
+        else{cell.todoButtonDone.setTitle("Not done", for: [])}
         return cell
     }
     
@@ -76,17 +72,26 @@ class TodoTableViewController: UITableViewController {
     }
     */
 
-    /*
+    
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            if(tasks[indexPath.row].state == true){
+                tasks.remove(at: indexPath.row)
+                tableView.deleteRows(at: [indexPath], with: .fade)
+            }
+            else{
+                let alert = UIAlertController(title: "Erreur", message: "La tâche n'est pas terminée, elle ne peut pas être effacée", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+                NSLog("The \"OK\" alert occured.")
+                }))
+                self.present(alert, animated: true, completion: nil)
+            }
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
     }
-    */
+    
 
     /*
     // Override to support rearranging the table view.
