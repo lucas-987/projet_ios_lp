@@ -100,6 +100,9 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <action selector="textEditingChanged:" destination="78o-Vm-4c2" eventType="editingDidEnd" id="SbW-13-qRk"/>
+                                </connections>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Last modified date :" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lkx-BW-czo">
                                 <rect key="frame" x="20" y="166" width="151" height="21"/>
@@ -146,9 +149,21 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <navigationItem key="navigationItem" title="La tâche consultée" id="jWd-JV-xmn">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="7JW-r2-M6Y"/>
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="7JW-r2-M6Y">
+                            <connections>
+                                <action selector="cancelButtonClicked:" destination="78o-Vm-4c2" id="N20-7w-02Q"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Save" id="ohv-BA-MQI"/>
                     </navigationItem>
+                    <connections>
+                        <outlet property="cancelButton" destination="7JW-r2-M6Y" id="26S-pc-rzC"/>
+                        <outlet property="taskDate" destination="Og6-9s-M4P" id="mu9-Jt-RKK"/>
+                        <outlet property="taskImage" destination="go5-X6-SDO" id="dSS-t7-sFh"/>
+                        <outlet property="taskInputName" destination="xUQ-dH-1wj" id="hwu-Kn-ymP"/>
+                        <outlet property="taskLocalisation" destination="t9Y-sB-6Ek" id="lB3-gj-ZoW"/>
+                        <outlet property="taskLocalisationSwitch" destination="9Nx-zi-sHC" id="gSL-ld-OXS"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="56D-TO-R3y" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

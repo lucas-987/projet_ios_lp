@@ -117,5 +117,12 @@ class TodoTableViewController: UITableViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let selectedIndexPath = tableView.indexPathForSelectedRow!
+        let selectedTask = tasks[selectedIndexPath.row]
+        let detailTask = segue.destination as! TaskViewController
+        detailTask.task = selectedTask
+    }
 
 }
