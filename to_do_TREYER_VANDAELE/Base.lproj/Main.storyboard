@@ -42,11 +42,11 @@
                             </connections>
                         </textField>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TodoTaskCell" id="ZTU-OH-FLt" customClass="TodoTableViewCell" customModule="to_do_TREYER_VANDAELE" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="TodoTaskCell" id="ZTU-OH-FLt" customClass="TodoTableViewCell" customModule="to_do_TREYER_VANDAELE" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="62" width="414" height="43.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ZTU-OH-FLt" id="P3Q-cr-Ut2">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="383" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LLc-Zo-SKH">
@@ -69,7 +69,7 @@
                                 <connections>
                                     <outlet property="todoButtonDone" destination="LLc-Zo-SKH" id="pen-d1-zst"/>
                                     <outlet property="todoTitleLabel" destination="Igw-YO-7Fv" id="uHo-jL-IEM"/>
-                                    <segue destination="78o-Vm-4c2" kind="show" id="R3Z-eQ-YNs"/>
+                                    <segue destination="78o-Vm-4c2" kind="show" id="pNK-el-VdE"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -151,13 +151,20 @@
                     <navigationItem key="navigationItem" title="La tâche consultée" id="jWd-JV-xmn">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="7JW-r2-M6Y">
                             <connections>
-                                <action selector="cancelButtonClicked:" destination="78o-Vm-4c2" id="N20-7w-02Q"/>
+                                <action selector="cancelButtonClicked:" destination="78o-Vm-4c2" id="1as-g8-8gp"/>
+                                <segue destination="HKI-pS-Yy6" kind="unwind" unwindAction="unwindToToDoListWithSegue:" id="GHv-Rp-pWO"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Save" id="ohv-BA-MQI"/>
+                        <barButtonItem key="rightBarButtonItem" title="Save" id="ohv-BA-MQI">
+                            <connections>
+                                <action selector="saveButtonClicked:" destination="78o-Vm-4c2" id="kyt-9Q-wcl"/>
+                                <segue destination="HKI-pS-Yy6" kind="unwind" unwindAction="unwindToToDoListWithSegue:" id="IUT-bO-9jJ"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="cancelButton" destination="7JW-r2-M6Y" id="26S-pc-rzC"/>
+                        <outlet property="cancelButton" destination="7JW-r2-M6Y" id="9Bn-6b-bjl"/>
+                        <outlet property="saveButton" destination="ohv-BA-MQI" id="Gz4-8i-Sod"/>
                         <outlet property="taskDate" destination="Og6-9s-M4P" id="mu9-Jt-RKK"/>
                         <outlet property="taskImage" destination="go5-X6-SDO" id="dSS-t7-sFh"/>
                         <outlet property="taskInputName" destination="xUQ-dH-1wj" id="hwu-Kn-ymP"/>
@@ -166,6 +173,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="56D-TO-R3y" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="HKI-pS-Yy6" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="3086.9565217391305" y="111.83035714285714"/>
         </scene>

@@ -9,9 +9,10 @@
 import UIKit
 import MapKit
 
-class TaskViewController: UIViewController {
+class TaskViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
 
     @IBOutlet weak var cancelButton: UIBarButtonItem!
+    @IBOutlet weak var saveButton: UIBarButtonItem!
     
     @IBOutlet weak var taskInputName: UITextField!
     @IBOutlet weak var taskDate: UILabel!
@@ -20,9 +21,11 @@ class TaskViewController: UIViewController {
     @IBOutlet weak var taskLocalisation: MKMapView!
     
     var task: ToDoTask?
+    var locationManager:CLLocationManager!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.hideKeyboardWhenTappedAround()
         if let toDoTask = task {
             self.navigationItem.title = toDoTask.title
             taskInputName.text = toDoTask.title
@@ -31,17 +34,48 @@ class TaskViewController: UIViewController {
             taskDate.text = dateFormatee.string(from: toDoTask.lastUpdateDate)
             if(toDoTask.photo != nil){ taskImage.image = toDoTask.photo }
             if(toDoTask.localisation != nil){
-                //Faire des trucs pour afficher l bon endroit sur la carte
+                
             }
         }
     }
     
-    @IBAction func cancelButtonClicked(_ sender: Any) {
+    /*func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last{
+            let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+            let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+            self.taskLocalisation.setRegion(region, animated: true)
+        }
+    }*/
+    
+    @IBAction func cancelButtonClicked(_ sender: UIBarButtonItem) {
         dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func textEditingChanged(_ sender: Any) {
+    @IBAction func saveButtonClicked(_ sender: Any) {
+        print("Il faut sauvegarder.")
+        task!.title = taskInputName.text!
+        task!.lastUpdateDate = Date()
     }
+    
+    @IBAction func textEditingChanged(_ sender: UITextField) {
+        if(sender.text!.isEmpty || sender.text!.trimmingCharacters(in: .whitespaces).isEmpty){ saveButton.isEnabled = false }
+        else { saveButton.isEnabled = true }
+    }
+    
+    
+    
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+
+    @objc func dismissKeyboard() { view.endEditing(true) }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?){
+        
+    }
+    
     /*
     // MARK: - Navigation
 
