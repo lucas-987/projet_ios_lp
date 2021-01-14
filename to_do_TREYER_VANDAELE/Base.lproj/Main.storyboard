@@ -151,13 +151,11 @@
                     <navigationItem key="navigationItem" title="La tâche consultée" id="jWd-JV-xmn">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="7JW-r2-M6Y">
                             <connections>
-                                <action selector="cancelButtonClicked:" destination="78o-Vm-4c2" id="1as-g8-8gp"/>
-                                <segue destination="HKI-pS-Yy6" kind="unwind" unwindAction="unwindToToDoListWithSegue:" id="GHv-Rp-pWO"/>
+                                <action selector="cancelButtonClicked:" destination="78o-Vm-4c2" id="C3g-J8-3BD"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Save" id="ohv-BA-MQI">
                             <connections>
-                                <action selector="saveButtonClicked:" destination="78o-Vm-4c2" id="kyt-9Q-wcl"/>
                                 <segue destination="HKI-pS-Yy6" kind="unwind" unwindAction="unwindToToDoListWithSegue:" id="IUT-bO-9jJ"/>
                             </connections>
                         </barButtonItem>

@@ -33,36 +33,25 @@ class TaskViewController: UIViewController, MKMapViewDelegate, CLLocationManager
             dateFormatee.dateFormat = "HH:mm E, d MMM y"
             taskDate.text = dateFormatee.string(from: toDoTask.lastUpdateDate)
             if(toDoTask.photo != nil){ taskImage.image = toDoTask.photo }
+            else{
+                print("ok connard")
+                taskImage.image = UIImage(named: "NoPhoto")
+            }
             if(toDoTask.localisation != nil){
                 
             }
         }
     }
     
-    /*func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.last{
-            let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-            let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-            self.taskLocalisation.setRegion(region, animated: true)
-        }
-    }*/
-    
     @IBAction func cancelButtonClicked(_ sender: UIBarButtonItem) {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    @IBAction func saveButtonClicked(_ sender: Any) {
-        print("Il faut sauvegarder.")
-        task!.title = taskInputName.text!
-        task!.lastUpdateDate = Date()
+        navigationController?.popViewController(animated: true)
+        //dismiss(animated: true, completion: nil)
     }
     
     @IBAction func textEditingChanged(_ sender: UITextField) {
         if(sender.text!.isEmpty || sender.text!.trimmingCharacters(in: .whitespaces).isEmpty){ saveButton.isEnabled = false }
         else { saveButton.isEnabled = true }
     }
-    
-    
     
     func hideKeyboardWhenTappedAround() {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -73,17 +62,8 @@ class TaskViewController: UIViewController, MKMapViewDelegate, CLLocationManager
     @objc func dismissKeyboard() { view.endEditing(true) }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?){
-        
+        self.task!.title = taskInputName.text!
+        self.task!.lastUpdateDate = Date()
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
