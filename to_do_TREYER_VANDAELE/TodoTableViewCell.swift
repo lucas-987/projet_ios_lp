@@ -12,6 +12,7 @@ class TodoTableViewCell: UITableViewCell {
 
     @IBOutlet weak var todoTitleLabel: UILabel!
     @IBOutlet weak var todoButtonDone: UIButton!
+    
     var toDoTask: ToDoTask!
     
     override func awakeFromNib() {

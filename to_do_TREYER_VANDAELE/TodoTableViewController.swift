@@ -55,6 +55,8 @@ class TodoTableViewController: UITableViewController {
         cell.toDoTask = task
         if(task.state == true){cell.todoButtonDone.setTitle("Done", for: [])}
         else{cell.todoButtonDone.setTitle("Not done", for: [])}
+        
+        cell.todoButtonDone.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside);
         return cell
     }
     
@@ -91,4 +93,18 @@ class TodoTableViewController: UITableViewController {
         detailTask.task = selectedTask
     }
 
+    /*func addTarget(self, action: #selector(buttonTapped(sender:)), for: .touchUpInside) {
+        
+        
+    }*/
+    
+    @objc func buttonTapped(sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+        
+        let cell = sender.superview!.superview! as! TodoTableViewCell
+        
+        cell.toDoTask.state = !cell.toDoTask.state
+        
+        print(cell.toDoTask.state)
+    }
 }
