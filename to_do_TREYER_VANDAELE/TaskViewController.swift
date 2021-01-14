@@ -33,10 +33,7 @@ class TaskViewController: UIViewController, MKMapViewDelegate, CLLocationManager
             dateFormatee.dateFormat = "HH:mm E, d MMM y"
             taskDate.text = dateFormatee.string(from: toDoTask.lastUpdateDate)
             if(toDoTask.photo != nil){ taskImage.image = toDoTask.photo }
-            else{
-                print("ok connard")
-                taskImage.image = UIImage(named: "NoPhoto")
-            }
+            else{ taskImage.image = UIImage(named: "NoPhoto") }
             if(toDoTask.localisation != nil){
                 
             }
