@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class TaskViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
+class TaskViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     @IBOutlet weak var cancelButton: UIBarButtonItem!
     @IBOutlet weak var saveButton: UIBarButtonItem!
@@ -23,21 +23,48 @@ class TaskViewController: UIViewController, MKMapViewDelegate, CLLocationManager
     var task: ToDoTask?
     var locationManager:CLLocationManager!
     
+    let imagePicker = UIImagePickerController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.hideKeyboardWhenTappedAround()
+        imagePicker.delegate = self
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
+        self.taskImage.isUserInteractionEnabled = true
+        self.taskImage.addGestureRecognizer(tapGestureRecognizer)
         if let toDoTask = task {
             self.navigationItem.title = toDoTask.title
-            taskInputName.text = toDoTask.title
+            self.taskInputName.text = toDoTask.title
             let dateFormatee = DateFormatter()
             dateFormatee.dateFormat = "HH:mm E, d MMM y"
-            taskDate.text = dateFormatee.string(from: toDoTask.lastUpdateDate)
-            if(toDoTask.photo != nil){ taskImage.image = toDoTask.photo }
-            else{ taskImage.image = UIImage(named: "NoPhoto") }
+            self.taskDate.text = dateFormatee.string(from: toDoTask.lastUpdateDate)
+            if(toDoTask.photo != nil){ self.taskImage.image = toDoTask.photo }
+            else{ self.taskImage.image = UIImage(named: "NoPhoto") }
             if(toDoTask.localisation != nil){
                 
             }
         }
+    }
+    
+    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer)
+    {
+        let tappedImage = tapGestureRecognizer.view as! UIImageView
+        print("salut lol")
+        imagePicker.allowsEditing = false
+        imagePicker.sourceType = .photoLibrary
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            self.taskImage.contentMode = .scaleAspectFit
+            self.taskImage.image = pickedImage
+        }
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
     }
     
     @IBAction func cancelButtonClicked(_ sender: UIBarButtonItem) {
@@ -61,6 +88,7 @@ class TaskViewController: UIViewController, MKMapViewDelegate, CLLocationManager
     override func prepare(for segue: UIStoryboardSegue, sender: Any?){
         self.task!.title = taskInputName.text!
         self.task!.lastUpdateDate = Date()
+        self.task!.photo = taskImage.image
     }
 
 }
