@@ -61,9 +61,6 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <state key="normal" title="Button" image="Unchecked"/>
                                             <state key="selected" image="Checked"/>
-                                            <connections>
-                                                <action selector="todoButtoDoneClicked:" destination="ZTU-OH-FLt" eventType="touchUpInside" id="vxM-ON-HsV"/>
-                                            </connections>
                                         </button>
                                     </subviews>
                                 </tableViewCellContentView>
@@ -168,7 +165,7 @@
                         <outlet property="taskImage" destination="go5-X6-SDO" id="dSS-t7-sFh"/>
                         <outlet property="taskInputName" destination="xUQ-dH-1wj" id="hwu-Kn-ymP"/>
                         <outlet property="taskLocalisation" destination="t9Y-sB-6Ek" id="lB3-gj-ZoW"/>
-                        <outlet property="taskLocalisationSwitch" destination="9Nx-zi-sHC" id="gSL-ld-OXS"/>
+                        <outlet property="taskLocalisationSwitch" destination="9Nx-zi-sHC" id="eWn-6Q-BSb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="56D-TO-R3y" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
