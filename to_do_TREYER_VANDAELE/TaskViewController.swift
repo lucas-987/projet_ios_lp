@@ -23,6 +23,7 @@ class TaskViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     var task: ToDoTask?
     
     var userLocalisation: CLLocation!
+    var userLocalisationAnnotation: MKPointAnnotation?
     
     let locationManager = CLLocationManager()
     let imagePicker = UIImagePickerController()
@@ -36,9 +37,6 @@ class TaskViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
         self.taskImage.isUserInteractionEnabled = true
         self.taskImage.addGestureRecognizer(tapGestureRecognizer)
-        
-        let mapTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(mapTapped(tapGestureRecognizer:)))
-        self.taskLocalisation.addGestureRecognizer(mapTapGestureRecognizer)
         
         // Ask for Authorisation from the User.
         self.locationManager.requestAlwaysAuthorization()
@@ -61,11 +59,8 @@ class TaskViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             if(toDoTask.photo != nil){ self.taskImage.image = toDoTask.photo }
             else{ self.taskImage.image = UIImage(named: "NoPhoto") }
             
-            if let coordinates = toDoTask.localisation?.coordinate {
-                let annotationPoint = MKPointAnnotation()
-                annotationPoint.coordinate = coordinates
-                annotationPoint.title = "Localisation"
-                taskLocalisation.addAnnotation(annotationPoint)
+            if let location = toDoTask.localisation {
+                addAnnotation(location: location)
             }
         }
     }
@@ -75,18 +70,6 @@ class TaskViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         imagePicker.allowsEditing = false
         imagePicker.sourceType = .photoLibrary
         present(imagePicker, animated: true, completion: nil)
-    }
-    
-    @objc func mapTapped(tapGestureRecognizer: UITapGestureRecognizer)
-    {
-        let location = tapGestureRecognizer.location(in: taskLocalisation)
-        let coordinate = taskLocalisation.convert(location, toCoordinateFrom: taskLocalisation)
-        
-        //task?.setLocalisation(localisation: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude))
-        
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinate
-        taskLocalisation.addAnnotation(annotation)
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -111,6 +94,14 @@ class TaskViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         else { saveButton.isEnabled = true }
     }
     
+    
+    @IBAction func switchValueChanged(_ sender: UISwitch) {
+        
+        if(sender.isOn) {
+            addAnnotation(location: userLocalisation)
+        }
+    }
+    
     func hideKeyboardWhenTappedAround() {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
@@ -123,12 +114,32 @@ class TaskViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         self.task!.title = taskInputName.text!
         self.task!.lastUpdateDate = Date()
         self.task!.photo = taskImage.image
-        if(taskLocalisationSwitch.isOn){ self.task!.localisation = self.userLocalisation }
+        
+        if(taskLocalisationSwitch.isOn) {
+            self.task!.localisation = self.userLocalisation
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         self.userLocalisation = locationManager.location
-        print(self.userLocalisation.coordinate.latitude)
-        print(self.userLocalisation.coordinate.longitude)
+        
+        if(taskLocalisationSwitch.isOn) {
+            if let localisationAnnotation = userLocalisationAnnotation {
+                taskLocalisation.removeAnnotation(localisationAnnotation)
+            }
+            
+            addAnnotation(location: userLocalisation)
+        }
+    }
+    
+    func addAnnotation(location: CLLocation) {
+        let annotationPoint = MKPointAnnotation()
+        
+        annotationPoint.coordinate = location.coordinate
+        annotationPoint.title = "Localisation"
+        
+        taskLocalisation.addAnnotation(annotationPoint)
+        taskLocalisation.setCenter(location.coordinate, animated: true)
+        userLocalisationAnnotation = annotationPoint
     }
 }
