@@ -37,7 +37,9 @@ class ToDoTask: NSObject {
             ToDoTask(title: "Licencier Lucas Treyer", state: false),
             ToDoTask(title: "Noter ce projet 20/20", state: false)
         ]
-        return toDoTasks;
+        
+        toDoTasks[0].localisation = CLLocation(latitude: CLLocationDegrees(47), longitude: CLLocationDegrees(6))
+        return toDoTasks
     }
 }
 

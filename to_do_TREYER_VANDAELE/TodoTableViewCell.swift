@@ -24,15 +24,4 @@ class TodoTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         // Configure the view for the selected state
     }
-
-    @IBAction func todoButtoDoneClicked(_ sender: Any) {
-        if(todoButtonDone.titleLabel!.text == "Not done"){
-            toDoTask.state = true
-            todoButtonDone.setTitle("Done", for: [])
-        }
-        else{
-            toDoTask.state = false
-            todoButtonDone.setTitle("Not done", for: [])
-        }
-    }
 }
