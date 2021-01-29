@@ -55,11 +55,16 @@ class TaskViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             self.taskInputName.text = toDoTask.title
             let dateFormatee = DateFormatter()
             dateFormatee.dateFormat = "HH:mm E, d MMM y"
-            self.taskDate.text = dateFormatee.string(from: toDoTask.lastUpdateDate)
-            if(toDoTask.photo != nil){ self.taskImage.image = toDoTask.photo }
-            else{ self.taskImage.image = UIImage(named: "NoPhoto") }
+            self.taskDate.text = dateFormatee.string(from: toDoTask.lastUpdateDate!)
             
-            if let location = toDoTask.localisation {
+            if let photo = toDoTask.getPhoto() {
+                self.taskImage.image = photo
+            }
+            else{
+                self.taskImage.image = UIImage(named: "NoPhoto")
+            }
+            
+            if let location = toDoTask.getLocation() {
                 addAnnotation(location: location)
             }
         }
@@ -89,11 +94,17 @@ class TaskViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         //dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func textEditingChanged(_ sender: UITextField) {
-        if(sender.text!.isEmpty || sender.text!.trimmingCharacters(in: .whitespaces).isEmpty){ saveButton.isEnabled = false }
-        else { saveButton.isEnabled = true }
-    }
     
+    @IBAction func textEditingChanged(_ sender: UITextField) {
+        
+        if(sender.text!.isEmpty || sender.text!.trimmingCharacters(in: .whitespaces).isEmpty){
+            
+            saveButton.isEnabled = false
+        }
+        else {
+            saveButton.isEnabled = true
+        }
+    }
     
     @IBAction func switchValueChanged(_ sender: UISwitch) {
         
@@ -113,10 +124,13 @@ class TaskViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     override func prepare(for segue: UIStoryboardSegue, sender: Any?){
         self.task!.title = taskInputName.text!
         self.task!.lastUpdateDate = Date()
-        self.task!.photo = taskImage.image
+        
+        if let image = taskImage.image {
+            self.task!.setPhoto(photo: image)
+        }
         
         if(taskLocalisationSwitch.isOn) {
-            self.task!.localisation = self.userLocalisation
+            self.task!.setLocation(location: self.userLocalisation)
         }
     }
     

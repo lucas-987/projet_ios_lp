@@ -11,7 +11,9 @@ import UIKit
 class TodoTableViewController: UITableViewController {
     
     @IBOutlet weak var addTodoTextField: UITextField!
-    var tasks = [ToDoTask]()
+    var tasks: [ToDoTask]?
+    
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     @IBAction func addTodoTextFieldEntered(_ sender: UITextField) {
         if(sender.text!.isEmpty || sender.text!.trimmingCharacters(in: .whitespaces).isEmpty){
@@ -22,14 +24,25 @@ class TodoTableViewController: UITableViewController {
             self.present(alert, animated: true, completion: nil)
         }
         else{
-            tasks.append(ToDoTask(title: sender.text!, state: false))
+            let newTask = ToDoTask(context: self.context)
+            newTask.title = sender.text!
+            newTask.state = false
+            newTask.lastUpdateDate = Date()
+            
+            do {
+                try self.context.save()
+            } catch {
+                
+            }
+            
+            sender.text = ""
             sender.resignFirstResponder()
-            tableView.reloadData()
+            fetchTodos()
         }
     }
     
     override func viewDidLoad() {
-        tasks = ToDoTask.loadSampleToDos()
+        fetchTodos()
         super.viewDidLoad()
 
         // Uncomment the following line to preserve selection between presentations
@@ -44,17 +57,27 @@ class TodoTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tasks.count
+        if let tasks = self.tasks {
+            return tasks.count
+        }
+        else {
+            return 0
+        }
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TodoTaskCell", for: indexPath) as! TodoTableViewCell
-        let task = tasks[indexPath.row]
+        let task = tasks![indexPath.row]
         cell.todoTitleLabel.text = task.title
         cell.toDoTask = task
-        if(task.state == true){ cell.todoButtonDone.isSelected = true }
-        else{ cell.todoButtonDone.isSelected = false }
+    
+        if(task.state == true){
+            cell.todoButtonDone.isSelected = true
+        }
+        else{
+            cell.todoButtonDone.isSelected = false
+        }
         
         cell.todoButtonDone.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside);
         return cell
@@ -62,9 +85,19 @@ class TodoTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            if(tasks[indexPath.row].state == true){
-                tasks.remove(at: indexPath.row)
-                tableView.deleteRows(at: [indexPath], with: .fade)
+            
+            let taskToRemove = tasks![indexPath.row]
+            
+            if(taskToRemove.state == true){
+                self.context.delete(taskToRemove)
+                
+                do {
+                    try self.context.save()
+                } catch {
+                    
+                }
+                
+                self.fetchTodos()
             }
             else{
                 let alert = UIAlertController(title: "Erreur", message: "La tâche n'est pas terminée, elle ne peut pas être effacée", preferredStyle: .alert)
@@ -73,22 +106,30 @@ class TodoTableViewController: UITableViewController {
                 }))
                 self.present(alert, animated: true, completion: nil)
             }
+            
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
     }
     
     @IBAction func unwindToToDoList(segue: UIStoryboardSegue){
-        let taskview = segue.source as! TaskViewController
+        /*let taskview = segue.source as! TaskViewController
         let task = taskview.task
         let selectedIndexPath = tableView.indexPathForSelectedRow!
-        tasks[selectedIndexPath.row] = task!
-        tableView.reloadRows(at: [selectedIndexPath], with: .none)
+        tasks![selectedIndexPath.row] = task! // TODO verify this
+        tableView.reloadRows(at: [selectedIndexPath], with: .none)*/
+        do {
+            try self.context.save()
+        } catch {
+            
+        }
+        
+        fetchTodos()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let selectedIndexPath = tableView.indexPathForSelectedRow!
-        let selectedTask = tasks[selectedIndexPath.row]
+        let selectedTask = tasks![selectedIndexPath.row] // TODO verify this
         let detailTask = segue.destination as! TaskViewController
         detailTask.task = selectedTask
     }
@@ -102,5 +143,20 @@ class TodoTableViewController: UITableViewController {
         let cell = sender.superview!.superview! as! TodoTableViewCell
         cell.toDoTask.state = !cell.toDoTask.state
         print(cell.toDoTask.state)
+    }
+}
+
+extension TodoTableViewController {
+    func fetchTodos() {
+        do {
+            self.tasks = try context.fetch(ToDoTask.fetchRequest())
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+        catch {
+            
+        }
     }
 }
